@@ -55,14 +55,14 @@ A modern ride-hailing platform built with **React**, featuring separate interfac
 
 ## 📦 Installation
 
-# 1. Clone the repository
+### 1. Clone the repository
 git clone https://github.com/omkar1705/RideBooking.com.git
 
-# 2. Install dependencies
+### 2. Install dependencies
 cd ride-booking-app
 npm install
 
-# 3. Configure environment variables
+### 3. Configure environment variables
 # Create a .env file in the root directory and add:
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -71,24 +71,24 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 npm run dev
 🧱 Project Structure
 
-# src/
-# ├── assets/
-│   └── images/
-├── components/
-│   ├── Header.jsx
-│   ├── HeroSection.jsx
-│   ├── LoadingButton.jsx
-│   └── LoadingSpinner.jsx
-├── context/
-│   └── AuthContext.jsx
-├── pages/
-│   ├── Login.jsx
-│   ├── Signup.jsx
-│   ├── PassengerDashboard.jsx
-│   └── DriverDashboard.jsx
-├── services/
-│   └── api.js
-└── App.jsx
+### src/
+### ├── assets/
+###│   └── images/
+### ├── components/
+### │   ├── Header.jsx
+### │   ├── HeroSection.jsx
+### │   ├── LoadingButton.jsx
+### │   └── LoadingSpinner.jsx
+### ├── context/
+### │   └── AuthContext.jsx
+### ├── pages/
+### │   ├── Login.jsx
+### │   ├── Signup.jsx
+### │   ├── PassengerDashboard.jsx
+### │   └── DriverDashboard.jsx
+### ├── services/
+### │   └── api.js
+### └── App.jsx
 
 
 
