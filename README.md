@@ -56,7 +56,7 @@ A modern ride-hailing platform built with **React**, featuring separate interfac
 ## 📦 Installation
 
 # 1. Clone the repository
-git clone https://github.com/yourusername/ride-booking-app.git
+git clone https://github.com/omkar1705/RideBooking.com.git
 
 # 2. Install dependencies
 cd ride-booking-app
@@ -94,39 +94,36 @@ src/
 
 
 
-#🔐 Authentication Flow
+🔐 Authentication Flow
 User signs up with email, password, and role (passenger/driver)
-
 User logs in with credentials
-
 JWT token is stored in localStorage
-
 Protected routes verify token validity
-
 Role-based navigation to respective dashboards
 
 
-#🤝 Contributing
+
+
+🤝 Contributing
 Fork the repository
-
 Create your feature branch: git checkout -b feature/AmazingFeature
-
 Commit your changes: git commit -m 'Add some AmazingFeature'
-
 Push to the branch: git push origin feature/AmazingFeature
-
 Open a Pull Request
 
-#📄 License
+
+
+📄 License
 This project is licensed under the MIT License – see the LICENSE file for details.
 
-#🙏 Acknowledgments
+
+
+🙏 #Acknowledgments
 Supabase for backend services
-
 Tailwind CSS for styling
-
 React Icons for icons
 
-#📞 Contact
+
+📞 #Contact
 Your Name – Omkar Milind Tigade – omkartigade@gmail.com
 Project Link: https://github.com/yourusername/ride-booking-app
