@@ -11,7 +11,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://ride-booking-com-akok-bneycr51s-omkar1705s-projects.vercel.app",
     credentials: true,
   })
 );
