@@ -1,6 +1,8 @@
 // src/pages/DriverDashboard.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthGuard } from "../hooks/useAuthGuard";
+import { handleAuthError } from "../utils/authErrorHandler";
 import Header from "../components/Header";
 import { rides } from "../services/api";
 import bikeIcon from "../assets/images/bike.png";
@@ -10,14 +12,20 @@ import busIcon from "../assets/images/bus.png";
 
 export default function DriverDashboard() {
   const navigate = useNavigate();
+  // Use authentication guard to ensure user is logged in and has driver role
+  const { user, isAuthenticated } = useAuthGuard("driver");
+  
   const [availableRides, setAvailableRides] = useState([]);
   const [myRides, setMyRides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchRides();
-  }, []);
+    // Only fetch rides if user is authenticated
+    if (isAuthenticated) {
+      fetchRides();
+    }
+  }, [isAuthenticated]);
 
   const fetchRides = async () => {
     try {
@@ -34,6 +42,12 @@ export default function DriverDashboard() {
       setMyRides(myRides || []);
     } catch (error) {
       console.error("Error fetching rides:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError("Failed to fetch rides");
     } finally {
       setLoading(false);
@@ -47,6 +61,12 @@ export default function DriverDashboard() {
       setError(null);
     } catch (error) {
       console.error("Error accepting ride:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError("Failed to accept ride");
     }
   };
@@ -58,6 +78,12 @@ export default function DriverDashboard() {
       setError(null);
     } catch (error) {
       console.error("Error completing ride:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError("Failed to complete ride");
     }
   };
@@ -135,7 +161,15 @@ export default function DriverDashboard() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      {/* Show loading while authentication is being verified */}
+      {!isAuthenticated ? (
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-8">
+            <div className="text-lg text-gray-600">Verifying authentication...</div>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">
             Driver Dashboard
@@ -203,7 +237,8 @@ export default function DriverDashboard() {
             )}
           </div>
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

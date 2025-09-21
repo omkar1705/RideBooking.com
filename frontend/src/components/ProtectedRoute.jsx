@@ -1,18 +1,18 @@
 // src/components/ProtectedRoute.jsx
 import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProtectedRoute({ children, allowedRole }) {
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = localStorage.getItem("token");
+  const { user } = useAuth();
 
-  if (!token || !user) {
-    // Redirect to login if not authenticated
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  // If no user is logged in, redirect to home page
+  if (!user) {
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
-  if (allowedRole && user.user_metadata.role !== allowedRole) {
-    // Redirect to home if wrong role
+  // If a specific role is required and user doesn't have it, redirect to home
+  if (allowedRole && user.user_metadata?.role !== allowedRole) {
     return <Navigate to="/" replace />;
   }
 
