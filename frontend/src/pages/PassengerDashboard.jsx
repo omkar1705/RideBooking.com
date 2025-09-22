@@ -1,6 +1,9 @@
 // src/pages/PassengerDashboard.jsx
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { rides } from "../services/api";
+import { useAuthGuard } from "../hooks/useAuthGuard";
+import { handleAuthError } from "../utils/authErrorHandler";
 import Header from "../components/Header";
 import TransportSelection from "../components/TransportSelection";
 import bikeIcon from "../assets/images/bike.png";
@@ -9,6 +12,10 @@ import electricBikeIcon from "../assets/images/electric-bike.png";
 import busIcon from "../assets/images/bus.png";
 
 export default function PassengerDashboard() {
+  // Use authentication guard to ensure user is logged in and has passenger role
+  const { user, isAuthenticated } = useAuthGuard("passenger");
+  const navigate = useNavigate();
+  
   const [myRides, setMyRides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,6 +33,12 @@ export default function PassengerDashboard() {
       setError(null);
     } catch (error) {
       console.error("Error fetching rides:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError("Failed to fetch rides. Please try again.");
     } finally {
       setLoading(false);
@@ -33,8 +46,11 @@ export default function PassengerDashboard() {
   };
 
   useEffect(() => {
-    fetchRides();
-  }, []);
+    // Only fetch rides if user is authenticated
+    if (isAuthenticated) {
+      fetchRides();
+    }
+  }, [isAuthenticated]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -65,6 +81,12 @@ export default function PassengerDashboard() {
       fetchRides();
     } catch (error) {
       console.error("Error creating ride:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError(error.response?.data?.error || "Failed to create ride");
     } finally {
       setLoading(false);
@@ -79,6 +101,12 @@ export default function PassengerDashboard() {
       setError(null);
     } catch (error) {
       console.error("Error cancelling ride:", error);
+      
+      // Handle authentication errors
+      if (handleAuthError(error, navigate)) {
+        return;
+      }
+      
       setError("Failed to cancel ride. Please try again.");
     } finally {
       setLoading(false);
@@ -89,7 +117,15 @@ export default function PassengerDashboard() {
     <div className="min-h-screen bg-gray-50">
       <Header />
 
-      <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+      {/* Show loading while authentication is being verified */}
+      {!isAuthenticated ? (
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-8">
+            <div className="text-lg text-gray-600">Verifying authentication...</div>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {error && (
           <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
             {error}
@@ -259,7 +295,8 @@ export default function PassengerDashboard() {
             </div>
           )}
         </div>
-      </div>
+        </div>
+      )}
     </div>
   );
 }

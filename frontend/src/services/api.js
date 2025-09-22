@@ -1,7 +1,7 @@
 // src/services/api.js
 import axios from "axios";
 
-const API_URL = "https://ridebooking-com.onrender.com/api";
+const API_URL = "http://localhost:5000/api";
 
 const api = axios.create({
   baseURL: API_URL,
@@ -52,6 +52,19 @@ export const auth = {
       throw error;
     }
   },
+
+  // Check if user is authenticated
+  isAuthenticated: () => {
+    const user = localStorage.getItem("user");
+    const session = localStorage.getItem("session");
+    return !!(user && session);
+  },
+
+  // Get current user from localStorage
+  getCurrentUser: () => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  },
   login: async (credentials) => {
     try {
       const response = await api.post("/auth/login", credentials);
@@ -73,17 +86,20 @@ export const auth = {
     localStorage.removeItem("user");
     localStorage.removeItem("session");
   },
-
-  getCurrentUser: () => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  },
 };
 
 export const rides = {
+  // Helper function to check authentication before ride operations
+  _checkAuth: () => {
+    if (!auth.isAuthenticated()) {
+      throw new Error("Authentication required. Please log in to perform this action.");
+    }
+  },
+
   // For drivers
   getDriverRides: async () => {
     try {
+      rides._checkAuth();
       const response = await api.get("/rides/driver/rides");
       return response.data; // Return just the data
     } catch (error) {
@@ -94,6 +110,7 @@ export const rides = {
 
   getMyRides: async () => {
     try {
+      rides._checkAuth();
       const response = await api.get("/rides/driver/my-rides");
       return response.data; // Return just the data
     } catch (error) {
@@ -104,6 +121,7 @@ export const rides = {
 
   acceptRide: async (rideId) => {
     try {
+      rides._checkAuth();
       const response = await api.post(`/rides/accept/${rideId}`);
       return response;
     } catch (error) {
@@ -114,6 +132,7 @@ export const rides = {
 
   completeRide: async (rideId) => {
     try {
+      rides._checkAuth();
       const response = await api.post(`/rides/complete/${rideId}`);
       return response;
     } catch (error) {
@@ -121,8 +140,10 @@ export const rides = {
       throw error;
     }
   },
+
   createRide: async (rideData) => {
     try {
+      rides._checkAuth();
       const response = await api.post("/rides/create", rideData);
       return response.data;
     } catch (error) {
@@ -134,6 +155,7 @@ export const rides = {
   // Add cancelRide function
   cancelRide: async (rideId) => {
     try {
+      rides._checkAuth();
       const response = await api.post(`/rides/cancel/${rideId}`);
       return response.data;
     } catch (error) {
@@ -145,6 +167,7 @@ export const rides = {
   // Update getPassengerRides function
   getPassengerRides: async () => {
     try {
+      rides._checkAuth();
       const response = await api.get("/rides/passenger/rides");
       return response.data;
     } catch (error) {

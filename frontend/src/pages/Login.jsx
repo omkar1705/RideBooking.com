@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import ride from "../assets/images/ride-hailing.png";
 import LoadingButton from "../components/LoadingButton";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -21,7 +23,8 @@ export default function Login() {
     try {
       const { user } = await auth.login(formData);
       if (user?.user_metadata?.role) {
-        navigate(`/${user.user_metadata.role}`, { replace: true });
+        // Use AuthContext login function to update state and navigate
+        login(user);
       } else {
         throw new Error("User role not found");
       }

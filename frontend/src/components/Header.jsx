@@ -8,10 +8,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("session");
-      navigate("/login");
+      logout(); // Use AuthContext logout function
     } catch (error) {
       console.error("Logout error:", error);
     }
